@@ -10,6 +10,9 @@ This project declares conformity to [PVP](https://pvp.haskell.org/).
 "Colour" and "color" will be used interchangeably and arbitrarily in both the code
 and documentation.
 
+## Licenses
+The license for the files under the `./tests/` directory is specified in `./tests/LICENSE`.
+
 # Educational Objectives
 *   Haskell (obviously)
 *   Cabal

@@ -1,0 +1,4 @@
+# BMP images need to be extracted to be used, so we'll make them ignored
+# right now to avoid accidentally committing 100 MB into future repos.
+# (yes, the bitmap samples collectively make for 100 MB of data
+*.bmp
