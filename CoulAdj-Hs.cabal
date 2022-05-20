@@ -20,29 +20,18 @@ version:            0.1.0.0
 synopsis:
     Computes the list of adjacent colours for each colour in an image.
 
--- A longer description of the package.
--- description:
-
 -- URL for the project homepage or repository.
 homepage:           https://github.com/AmeliaSZK/CoulAdj-Hs
 
 -- A URL where users can report bugs.
 -- bug-reports:
 
--- The license under which the package is released.
 license:            BSD-3-Clause
-
--- The file containing the license text.
 license-file:       LICENSE
-
--- The package author(s).
 author:             Amélia SZK
 
--- An email address to which users can send suggestions, bug reports, and patches.
 maintainer:         amelia.szk@protonmail.com
 
--- A copyright notice.
--- copyright:
 category:           Graphics
 
 -- Extra files to be distributed with the package, such as examples or a README.
