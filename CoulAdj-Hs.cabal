@@ -50,7 +50,9 @@ executable CoulAdj-Hs
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.14.3.0
+    build-depends:    
+        base ^>=4.14.3.0,
+        JuicyPixels >= 3.3 && < 3.4
 
     -- Directories containing source files.
     hs-source-dirs:   app
