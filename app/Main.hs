@@ -25,7 +25,7 @@ main = do
     print (imageWidth img)
     putStr "imageHeight = "
     print (imageHeight img)
-    writeFile (resultFileArg settings) "Hi! :D"
+    writeFile (resultFileArg settings) "Hi again! :D\nThis should have erased the previous content."
 
 data ProgSettings = ProgSettings
     {   dontRelateDiagonals :: Bool,
