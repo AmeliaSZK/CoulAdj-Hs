@@ -83,7 +83,15 @@ main = do
             ]
     let allPixels = extractPixels img
     let stringifiedPixels = stringifyPixels allPixels
-    writeFile (resultFileArg settings) stringifiedPixels
+    --writeFile (resultFileArg settings) stringifiedPixels
+    -- # 3) COMPUTE ADJACENCIES #
+    let unsortedAdjacencies = computeAdjacencies img (dontRelateDiagonals settings)
+    -- # 4) SORT ADJACENCIES #
+    let adjacencies = sortAdjacencies unsortedAdjacencies
+    -- # 5) STRINGIFY #
+    let stringified = stringify adjacencies
+    -- # 6) WRITE TO FILE #
+    writeFile (resultFileArg settings) stringified
     putStrLn "End of CoulAdj"
 
 
@@ -107,8 +115,73 @@ parseArgs argc argv
         ++ "treated both the case for 2 and 3. Or should have, because obviously something went wrong.")
 
 
-computeAdjacencies :: Image PixelRGBA8 -> [(PixelRGBA8, PixelRGBA8)]
-computeAdjacencies = undefined
+computeAdjacencies :: Image PixelRGBA8 -> Bool -> [(PixelRGBA8, PixelRGBA8)]
+computeAdjacencies img dontRelateDiagonals = 
+    let
+        nbRows = imageHeight img
+        nbCols = imageWidth img
+        maxRow = nbRows - 1
+        maxCol = nbCols - 1
+        allRows = [0..maxRow]
+        allCols = [0..maxCol]
+        allRowCols = [(row,col) | row <- allRows, col <- allCols]
+        rowColIsInBounds (row,col) = 
+            0 <= row && row <= maxRow &&
+            0 <= col && col <= maxCol
+        evaluatedAllPixels = [ evalOnePixel img row col dontRelateDiagonals rowColIsInBounds 
+                                | (row, col) <- allRowCols ]
+        allAdjacencies = nub (concat evaluatedAllPixels)
+    in allAdjacencies
+
+evalOnePixel :: Image PixelRGBA8 -> Int -> Int -> Bool -> ((Int, Int) -> Bool) -> [(PixelRGBA8, PixelRGBA8)]
+evalOnePixel img row col dontRelateDiagonals rowColIsInBounds = 
+    let
+        relateDiagonals = not dontRelateDiagonals
+        {-The API option is named "dont...", because years ago, we thought
+            it was a good idea to make all options have a default value
+            of False, and we wanted the diagonals to be related by default.
+        And now, all our other implemations of CoulAdj have been using that
+            name, so we're keeping it.
+        Funny story: This project was (and still is, lol) intended to parse
+            geographic maps from Total War video games, to know which
+            regions the game considered adjacent to each others.
+            At the time, we had no way to know if the game was using the
+                diagonals, because to test it, you'd need 2 regions that would
+                "touch" by only a corner of a pixel.
+            Anywayz, when an update finally released a map where we had such
+                a situation (in Three Kingdoms), it turned out that the game
+                does NOT considers the diagonals, lol woops -}
+
+        midCent = (row,col) -- Also called the "hotspot"
+
+        topLeft = neighRowColFromOffsets midCent (-1, -1)
+        topCent = neighRowColFromOffsets midCent (-1,  0)
+        topRigh = neighRowColFromOffsets midCent (-1,  1)
+        midLeft = neighRowColFromOffsets midCent ( 0, -1)
+        midRigh = neighRowColFromOffsets midCent ( 0,  1)
+        botLeft = neighRowColFromOffsets midCent ( 1, -1)
+        botCent = neighRowColFromOffsets midCent ( 1,  0)
+        botRigh = neighRowColFromOffsets midCent ( 1,  1)
+
+        allNeighOffsets = 
+            if relateDiagonals then
+                [midRigh, botLeft, botCent, botRigh]
+            else
+                [midRigh,          botCent]
+        
+        calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
+        allNeighRowCols = filter rowColIsInBounds calculatedNeighRowCols
+        hotspotPixel  = [pixelAtRowCol img r c | (r,c) <- [midCent]]
+        neighbrPixels = [pixelAtRowCol img r c | (r,c) <- allNeighRowCols]
+        allAdjacencies = [ (hotspot, neighbr) | hotspot <- hotspotPixel, neighbr <- neighbrPixels ]
+        removedSameColours = [(a, b) | (a,b) <- allAdjacencies, a /= b]
+        removedDuplicates = nub removedSameColours
+
+    in removedDuplicates
+
+neighRowColFromOffsets :: (Int, Int) -> (Int, Int) -> (Int, Int)
+neighRowColFromOffsets (row,col) (rowOffset,colOffset) =
+    (row+rowOffset, col+colOffset)
 
 {-TODO: Write a custom sort
     The default sort that we get from the JuicyPixels package gives us
