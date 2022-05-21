@@ -20,7 +20,7 @@ Most of the development time & code lines are expected to be spent in the rest.
 import System.Environment
 import Codec.Picture
 import Data.Either
-import Data.List (intercalate)
+import Data.List
 
 main :: IO ()
 main = do
@@ -44,20 +44,39 @@ main = do
     putStr "imageHeight = "
     print (imageHeight img)
     let testPixel = PixelRGBA8 10 220 230 249
-    let testPixelBlu = PixelRGBA8  10  20 230 252
-    let testPixelGre = PixelRGBA8  10 220  30 250
-    let testPixelCya = PixelRGBA8  10 220 230 248
-    let testPixelRed = PixelRGBA8 210  20  30 246
-    let testPixelMag = PixelRGBA8 210  20 230 244
-    let testPixelYel = PixelRGBA8 210 220  30 242
+    let blu = PixelRGBA8  10  20 230 252
+    let gre = PixelRGBA8  10 220  30 250
+    let cya = PixelRGBA8  10 220 230 248
+    let red = PixelRGBA8 210  20  30 246
+    let mag = PixelRGBA8 210  20 230 244
+    let yel = PixelRGBA8 210 220  30 242
     print testPixel
     let allColours = [
-            (0, 0, testPixelBlu),
-            (0, 0, testPixelGre),
-            (0, 0, testPixelCya),
-            (0, 0, testPixelRed),
-            (0, 0, testPixelMag),
-            (0, 0, testPixelYel)
+            yel,
+            red,
+            mag,
+            gre,
+            cya,
+            blu
+            ]
+    let allColoursSorted = sort allColours
+    putStrLn "allColours :"
+    putStrLn (unlines (map show allColours))
+    putStrLn "allColoursSorted :"
+    putStrLn (unlines (map show allColoursSorted))
+    let allColourPairs = [(a,b) | a <- allColours, b <- allColours ]
+    let allColourPairsSorted = sort allColourPairs
+    putStrLn "allColourPairs :"
+    putStrLn (unlines (map show allColourPairs))
+    putStrLn "allColourPairsSorted :"
+    putStrLn (unlines (map show allColourPairsSorted))
+    let allRowColColours = [
+            (0, 0, blu),
+            (0, 0, gre),
+            (0, 0, cya),
+            (0, 0, red),
+            (0, 0, mag),
+            (0, 0, yel)
             ]
     let allPixels = extractPixels img
     let stringifiedPixels = stringifyPixels allPixels
