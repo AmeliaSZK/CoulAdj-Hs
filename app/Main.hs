@@ -3,6 +3,8 @@
 module Main where
 
 import System.Environment
+import Codec.Picture
+import Data.Either
 
 main :: IO ()
 main = do
@@ -16,6 +18,14 @@ main = do
     print (dontRelateDiagonals settings)
     print (imageFileArg settings)
     print (resultFileArg settings)
+    imgEither <- readImage (imageFileArg settings)
+    let imgDyn = either error id imgEither
+    let img = convertRGBA8 imgDyn -- TODO: Check & crash if img isn't RGB8 or RGBA8
+    putStr "imageWidth = "
+    print (imageWidth img)
+    putStr "imageHeight = "
+    print (imageHeight img)
+    writeFile (resultFileArg settings) "Hi! :D"
 
 data ProgSettings = ProgSettings
     {   dontRelateDiagonals :: Bool,
