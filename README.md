@@ -31,8 +31,30 @@ The license for the files under the `./tests/` directory is specified in `./test
 On Windows, we installed GHC and Cabal with [GHCup](https://www.haskell.org/ghcup/)
 
 # How to run
+All commands are executed from the root of the repository, which is the directory where this
+Readme file is stored.
 
-I don't know yet.
+For development:
+```
+cabal run CoulAdj-Hs image.png results.tsv
+```
+With the `--dont-relate-diagonals` option:
+```
+cabal run CoulAdj-Hs --dont-relate-diagonals image.png results.tsv
+```
+
+The `cabal run` command will first build the program, unless there was no changes, 
+and then execute it.
+
+To just build:
+```
+cabal build
+```
+
+To just execute:
+```
+cabal exec CoulAdj-Hs image.png results.tsv
+```
 
 # API
 
