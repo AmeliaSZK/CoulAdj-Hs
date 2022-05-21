@@ -70,6 +70,9 @@ main = do
     putStrLn (unlines (map show allColourPairs))
     putStrLn "allColourPairsSorted :"
     putStrLn (unlines (map show allColourPairsSorted))
+    putStrLn "------------------------"
+    putStrLn (stringify allColourPairsSorted)
+    putStrLn "------------------------"
     let allRowColColours = [
             (0, 0, blu),
             (0, 0, gre),
@@ -81,7 +84,7 @@ main = do
     let allPixels = extractPixels img
     let stringifiedPixels = stringifyPixels allPixels
     writeFile (resultFileArg settings) stringifiedPixels
-    print "End of CoulAdj"
+    putStrLn "End of CoulAdj"
 
 
 data ProgSettings = ProgSettings
@@ -107,11 +110,42 @@ parseArgs argc argv
 computeAdjacencies :: Image PixelRGBA8 -> [(PixelRGBA8, PixelRGBA8)]
 computeAdjacencies = undefined
 
+{-TODO: Write a custom sort
+    The default sort that we get from the JuicyPixels package gives us
+        exactly the result we want,
+    But it would be preferable to implement that behaviour ourselves,
+        in case a future update changes that, since we made promises
+        in our own API about the sort order.
+-}
 sortAdjacencies :: [(PixelRGBA8, PixelRGBA8)] -> [(PixelRGBA8, PixelRGBA8)]
-sortAdjacencies = undefined
+sortAdjacencies = sort
+
+{-DO NOT CHANGE THESE HEADERS
+
+These headers are part of the API defined in the Readme.
+They MUST NOT be changed unless the major version number is incremented.
+
+The outputted files are meant to be parsed by programs that rely on
+   hardcoded column names.
+
+THE NAMES OF THE COLUMNS, AND THE ORDER IN WHICH THEY ARE WRITTEN,
+   ARE THE MOST CRITICAL PART OF THE API.
+
+DO NOT CHANGE
+
+DO NOT CHANGE
+-}
+rgbAlphaHeader :: String
+rgbAlphaHeader = intercalate "\t" ["r", "g", "b", "a", "adj_r", "adj_g", "adj_b", "adj_a"]
 
 stringify :: [(PixelRGBA8, PixelRGBA8)] -> String
-stringify = undefined
+stringify adjacencies = 
+    let
+        tsved = [ (rgbAlphaToTsv colour1, rgbAlphaToTsv colour2) | (colour1, colour2) <- adjacencies ]
+        allDataLines = [ colour1 ++ "\t" ++ colour2 | (colour1, colour2) <- tsved ]
+        allLines = rgbAlphaHeader : allDataLines
+        addedNewLines = unlines allLines
+    in addedNewLines
 
 rgbAlphaToTsv :: PixelRGBA8 -> String
 rgbAlphaToTsv (PixelRGBA8 r g b a) = intercalate "\t" (map show [r, g, b, a])
