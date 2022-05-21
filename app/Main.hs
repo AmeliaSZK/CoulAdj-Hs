@@ -176,8 +176,8 @@ evalOnePixel img row col dontRelateDiagonals rowColIsInBounds =
         allAdjacencies = [ (hotspot, neighbr) | hotspot <- hotspotPixel, neighbr <- neighbrPixels ]
         removedSameColours = [(a, b) | (a,b) <- allAdjacencies, a /= b]
         removedDuplicates = nub removedSameColours
-
-    in removedDuplicates
+        addedSymmetricals = concat [ [(a,b),(b,a)] | (a,b) <- removedDuplicates ]
+    in addedSymmetricals
 
 neighRowColFromOffsets :: (Int, Int) -> (Int, Int) -> (Int, Int)
 neighRowColFromOffsets (row,col) (rowOffset,colOffset) =
