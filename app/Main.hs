@@ -59,8 +59,10 @@ main = do
             (0, 0, testPixelMag),
             (0, 0, testPixelYel)
             ]
-    writeFile (resultFileArg settings) (stringifyPixels allColours)
-    print "Goodbye"
+    let allPixels = extractPixels img
+    let stringifiedPixels = stringifyPixels allPixels
+    writeFile (resultFileArg settings) stringifiedPixels
+    print "End of CoulAdj"
 
 
 data ProgSettings = ProgSettings
@@ -95,9 +97,24 @@ stringify = undefined
 rgbAlphaToTsv :: PixelRGBA8 -> String
 rgbAlphaToTsv (PixelRGBA8 r g b a) = intercalate "\t" (map show [r, g, b, a])
 
+pixelAtRowCol :: Pixel a => Image a -> Int -> Int -> a
+pixelAtRowCol img row col = pixelAt img col row 
+-- pixelAt uses (x,y), which is the opposite of our usual (row,col) 
+-- https://hackage.haskell.org/package/JuicyPixels-3.3.7/docs/Codec-Picture.html#v:pixelAt
+
 -- For debug
-extractPixels :: Image PixelRGBA8 -> [PixelRGBA8]
-extractPixels = undefined
+extractPixels :: Image PixelRGBA8 -> [(Int, Int, PixelRGBA8)]
+extractPixels img = 
+    let
+        nbRows = imageHeight img
+        nbCols = imageWidth img
+        maxRow = nbRows - 1
+        maxCol = nbCols - 1
+        allRows = [0..maxRow]
+        allCols = [0..maxCol]
+        allRowCols = [(row,col) | row <- allRows, col <- allCols]
+        allPixels = [(row,col, pixelAtRowCol img row col ) | (row,col) <- allRowCols]
+    in allPixels
 
 -- For debug
 pixelsHeader :: String
