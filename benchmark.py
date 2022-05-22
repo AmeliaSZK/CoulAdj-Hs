@@ -28,38 +28,42 @@ def pixels_in_size(size):
 def test_one_size(size):
     image_filename = f"sample-size-{size}.png"
     result_filename = f"result-size-{size}.tsv"
+    nb_pixels = pixels_in_size(size)
+    img_name = f"Size {size}"
+    test_one_image(img_name, nb_pixels, image_filename, result_filename, golden_results)
+    
+
+def test_one_image(img_name, nb_pixels, image_filename, result_filename, golden):
     image_path = os.path.join(images_directory, image_filename)
     result_path = os.path.join(result_directory, result_filename)
 
     if not os.path.exists(image_path):
-        print(f"Data for size {size} is not in the repo; this file doesn't exist: {image_path}")
+        print(f"Image file note found: {image_path}")
         return
-    
-    #print(f"image_path = {image_path}")
-    #print(f"result_path = {result_path}")
 
     cmdline = f"{executable} {couladj} {image_path} {result_path}"
     #print(cmdline)
 
     start = time.perf_counter()
-    # subprocess.run(
-    #     [executable, 
-    #     #*["-O", "--no-debug"],
-    #     couladj, 
-    #     image_path, 
-    #     result_path]).check_returncode()
     subprocess.run(cmdline, shell=True).check_returncode()
     end = time.perf_counter()
     duration = round(end - start, 3)
 
-    nb_pixels = pixels_in_size(size)
     pixels_per_second = round(nb_pixels / duration)
 
-    is_correct = filecmp.cmp(golden_results, result_path, shallow=False)
+    is_correct = filecmp.cmp(golden, result_path, shallow=False)
     correctness_msg = "Correct" if is_correct else "INCORRECT"
-    print(f"{duration}", f"Size {size}", correctness_msg, f"{pixels_per_second} pixels/s", sep="\t")
+    print(f"{duration}", f"{img_name}", correctness_msg, f"{pixels_per_second} pixels/s", sep="\t")
 
-for size in [1,2,4,8]:
+test_one_image(
+    "MortEmp", 
+    3352*4096, 
+    "proprietary\\warhammer_map_1_1_shadow.bmp",
+    "result-shadow.tsv", 
+    "tests\\proprietary\\golden warhammer_map_1_1_shadow.tsv"
+    )
+
+for size in [1,2,4,8,16,32,64,128,256,512]:
     test_one_size(size)
 
 
