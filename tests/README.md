@@ -20,41 +20,6 @@ it is uncompressed:
 | Archive File | Uncompressed Size |
 |--------------|-------------------|
 | `bmp-samples.zip` | 100 MB |
-| `prolog-pixels-sizes-32-to-256.7z` | 200 MB |
-| `prolog-pixels-size-512.7z` | 600 MB |
-
-## Prolog Support
-10 months after its inital creation, this repository was updated to
-include sample data adapted for the Prolog implementation.
-
-The Prolog language has many particularities, one of them being that it's not
-meant to take image files in input, but instead text files that describe 
-"facts". Hence, we decided that for CoulAdj-Prolog, another language would be
-used to take the image file in input, create a text file with the pixel values,
-and pass that text file in input to the Prolog program.
-
-The problem is that the goal of these test samples is to have them 
-human-verifiable. This can be trivially done by sighted humans who can look
-at the enlarged preview available in this Readme. However, the canonical
-input to the Prolog program is a text file. And the smallest size in the regular
-samples has 72 pixels, meaning 72 rows of text.
-
-72 rows of text is too much for manual verification, especially since a lot of
-rows and columns are duplicates.
-
-Hence, the Prolog samples is an image of 5 by 6, for a total of 30 pixels, or
-30 rows of text. There is still a duplicate row in this sample, so we could
-have reduced the sample to 5 by 5, for 25 pixels, but then we would have an
-equal amount of rows and columns, and we decided that 5 rows of text was
-an acceptable cost to keep a different number of rows and columns.
-
-The Prolog sample is meant to have the same adjacencies, and surface the same
-bugs, as the regular samples.
-
-This Readme has been fully reviewed to make sure that all the
-information is correct and up-to-date. Note that we only mention the Prolog
-sample when it differs, so any reference to "all" samples 
-includes the Prolog sample.
 
 
 # Preview
@@ -70,22 +35,13 @@ NB: In all samples, the top-right red square was made to always be 1 by 1 pixel.
 This is why you can hardly see the red in the top-right when looking at the bigger
 samples.
 
-## Prolog
-The Prolog sample looks like the image below. This preview is 32 times
-bigger than the actual sample.
-
-![sample-preview-prolog](./doc/sample-preview-prolog.png)
-
-Actual size: ![sample-p](./prolog/sample-size-p.png)
-
 # Sizes
 In the preview, you can see that the colours are assigned by squares. We will
 call these squares "cells".
 
-The **size** of a (non-Prolog) sample is the **length of a cell in pixels**. Since the sample
+The **size** of a sample is the **length of a cell in pixels**. Since the sample
 is a grid of 9 by 8 cells, the sample of size 1 is 9 by 8 pixels, the
-sample of size 2 is 18 by 16 pixels, etc etc... The Prolog sample is an
-exception, hence it is of size `p`. ("p" for "Prolog")
+sample of size 2 is 18 by 16 pixels, etc etc...
 
 The size closest to the intended real-world use-case is 512, with ~18M pixels.
 As such, execution time at size 512 is the "canonical" metric, 
@@ -95,7 +51,6 @@ The included sizes are:
 
 | Size | Width | Height |  Nb Pixels | Notes |
 |-----:|------:|-------:|-----------:|:----------:|
-|    p |     5 |      6 |         30 | Prolog sample |
 |    1 |     9 |      8 |         72 |
 |    2 |    18 |     16 |        288 |
 |    4 |    36 |     32 |      1,152 |
@@ -115,7 +70,7 @@ in languages with a slow execution time.
 And yes, this is with a sub-quadratic implementation.)~~
 (Our Power Query implementation is now under 30 seconds!! 😁)
 
-> Each (non-Prolog) size has 4 times the amount of pixels than the previous size.
+> Each size has 4 times the amount of pixels than the previous size.
 
 
 
