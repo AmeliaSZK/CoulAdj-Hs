@@ -205,21 +205,21 @@ evalOnePixel img row col dontRelateDiagonals rowColIsInBounds =
         botCent = neighRowColFromOffsets midCent ( 1,  0)
         botRigh = neighRowColFromOffsets midCent ( 1,  1)
 
-        allNeighOffsets = 
+        calculatedNeighRowCols = 
             if relateDiagonals then
                 [midRigh, botLeft, botCent, botRigh]
             else
                 [midRigh,          botCent]
         
-        calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
+        --calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
         allNeighRowCols = filter rowColIsInBounds calculatedNeighRowCols
         hotspotPixel  = [pixelAtRowCol img r c | (r,c) <- [midCent]]
         neighbrPixels = [pixelAtRowCol img r c | (r,c) <- allNeighRowCols]
         allAdjacencies = [ (hotspot, neighbr) | hotspot <- hotspotPixel, neighbr <- neighbrPixels ]
         removedSameColours = [(a, b) | (a,b) <- allAdjacencies, a /= b]
         removedDuplicates = nub removedSameColours
-        --addedSymmetricals = concat [ [(a,b),(b,a)] | (a,b) <- removedDuplicates ]
-    in removedDuplicates
+        addedSymmetricals = concat [ [(a,b),(b,a)] | (a,b) <- removedDuplicates ]
+    in addedSymmetricals
 
 neighRowColFromOffsets :: (Int, Int) -> (Int, Int) -> (Int, Int)
 neighRowColFromOffsets (row,col) (rowOffset,colOffset) =
