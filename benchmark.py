@@ -1,11 +1,11 @@
 import subprocess, time, os.path, filecmp
 
-executable = "cabal run"
+executable = "cabal exec"
 couladj = "CoulAdj-Hs"
 
-images_directory = "tests/"
-result_directory = "tests/results/"
-golden_results = "tests/golden.tsv"
+images_directory = "tests\\"
+result_directory = "tests\\results\\"
+golden_results = "tests\\golden.tsv"
 
 print("Benchmark started")
 
@@ -26,7 +26,7 @@ def pixels_in_size(size):
     return nb_pixels[str(size)]
 
 def test_one_size(size):
-    image_filename = f"pixels-size-{size}.pl"
+    image_filename = f"sample-size-{size}.png"
     result_filename = f"result-size-{size}.tsv"
     image_path = os.path.join(images_directory, image_filename)
     result_path = os.path.join(result_directory, result_filename)
@@ -34,14 +34,21 @@ def test_one_size(size):
     if not os.path.exists(image_path):
         print(f"Data for size {size} is not in the repo; this file doesn't exist: {image_path}")
         return
+    
+    #print(f"image_path = {image_path}")
+    #print(f"result_path = {result_path}")
+
+    cmdline = f"{executable} {couladj} {image_path} {result_path}"
+    #print(cmdline)
 
     start = time.perf_counter()
-    subprocess.run(
-        [executable, 
-        #*["-O", "--no-debug"],
-        couladj, 
-        image_path, 
-        result_path]).check_returncode()
+    # subprocess.run(
+    #     [executable, 
+    #     #*["-O", "--no-debug"],
+    #     couladj, 
+    #     image_path, 
+    #     result_path]).check_returncode()
+    subprocess.run(cmdline, shell=True).check_returncode()
     end = time.perf_counter()
     duration = round(end - start, 3)
 

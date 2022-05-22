@@ -30,24 +30,24 @@ import Data.List
 main :: IO ()
 main = do
     -- # 1) PARSE COMMAND LINE ARGUMENTS #
-    putStrLn "Start of CoulAdj-Hs"
+    -- putStrLn "Start of CoulAdj-Hs"
     argv <- getArgs
     let argc = length argv
-    putStr "argc = "
-    print argc
+    -- putStr "argc = "
+    --print argc
     let settings = parseArgs argc argv
-    putStrLn "Arguments parsed without errors."
-    print (dontRelateDiagonals settings)
-    print (imageFileArg settings)
-    print (resultFileArg settings)
+    -- putStrLn "Arguments parsed without errors."
+    -- print (dontRelateDiagonals settings)
+    -- print (imageFileArg settings)
+    -- print (resultFileArg settings)
     -- # 2) DECODE INPUT IMAGE #
     imgEither <- readImage (imageFileArg settings)
     let imgDyn = either error id imgEither
     let img = convertRGBA8 imgDyn -- TODO: Check & crash if img isn't RGB8 or RGBA8
-    putStr "imageWidth = "
-    print (imageWidth img)
-    putStr "imageHeight = "
-    print (imageHeight img)
+    -- putStr "imageWidth = "
+    -- print (imageWidth img)
+    -- putStr "imageHeight = "
+    -- print (imageHeight img)
     -- # 3) COMPUTE ADJACENCIES #
     let unsortedAdjacencies = computeAdjacencies img (dontRelateDiagonals settings)
     -- # 4) SORT ADJACENCIES #
@@ -56,7 +56,7 @@ main = do
     let stringified = stringify adjacencies
     -- # 6) WRITE TO FILE #
     writeFile (resultFileArg settings) stringified
-    putStrLn "End of CoulAdj"
+    -- putStrLn "End of CoulAdj"
 
 
 data ProgSettings = ProgSettings
