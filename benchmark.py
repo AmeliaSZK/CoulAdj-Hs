@@ -1,12 +1,9 @@
 import subprocess, time, os.path, filecmp
 
-# THIS SCRIPT IS CURRENTLY ONLY GOOD FOR PROLOG
-# PLEASE REVIEW BEFORE USING IT FOR ANOTHER LANGUAGE
+executable = "cabal run"
+couladj = "CoulAdj-Hs"
 
-swi_prolog_executable = "swi-prolog.swipl"
-couladj_prolog = "CoulAdj.pl"
-
-pixels_directory = "tests/knowledge-bases/"
+images_directory = "tests/"
 result_directory = "tests/results/"
 golden_results = "tests/golden.tsv"
 
@@ -29,21 +26,21 @@ def pixels_in_size(size):
     return nb_pixels[str(size)]
 
 def test_one_size(size):
-    pixels_filename = f"pixels-size-{size}.pl"
+    image_filename = f"pixels-size-{size}.pl"
     result_filename = f"result-size-{size}.tsv"
-    pixels_path = os.path.join(pixels_directory, pixels_filename)
+    image_path = os.path.join(images_directory, image_filename)
     result_path = os.path.join(result_directory, result_filename)
 
-    if not os.path.exists(pixels_path):
-        print(f"Data for size {size} is not in the repo; this file doesn't exist: {pixels_path}")
+    if not os.path.exists(image_path):
+        print(f"Data for size {size} is not in the repo; this file doesn't exist: {image_path}")
         return
 
     start = time.perf_counter()
     subprocess.run(
-        [swi_prolog_executable, 
-        *["-O", "--no-debug"],
-        couladj_prolog, 
-        pixels_path, 
+        [executable, 
+        #*["-O", "--no-debug"],
+        couladj, 
+        image_path, 
         result_path]).check_returncode()
     end = time.perf_counter()
     duration = round(end - start, 3)
