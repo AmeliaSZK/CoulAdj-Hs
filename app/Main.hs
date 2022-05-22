@@ -93,6 +93,8 @@ main = do
     -- # 6) WRITE TO FILE #
     writeFile (resultFileArg settings) stringified
     -- START OF DEBUG
+    let dontDiags = dontRelateDiagonals settings
+    let relateDiagonals = not dontDiags
     let nbRows = imageHeight img
     let nbCols = imageWidth img
     let maxRow = nbRows - 1
@@ -103,9 +105,34 @@ main = do
     let rowColIsInBounds (row,col) = 
             0 <= row && row <= maxRow &&
             0 <= col && col <= maxCol
-    let dontDiags = dontRelateDiagonals settings
     let evaledR3C3 = evalOnePixel img 3 3 dontDiags rowColIsInBounds
     putStrLn (stringify (sortAdjacencies evaledR3C3))
+    let midCent = (3,3)
+    let topLeft = neighRowColFromOffsets midCent (-1, -1)
+    let topCent = neighRowColFromOffsets midCent (-1,  0)
+    let topRigh = neighRowColFromOffsets midCent (-1,  1)
+    let midLeft = neighRowColFromOffsets midCent ( 0, -1)
+    let midRigh = neighRowColFromOffsets midCent ( 0,  1)
+    let botLeft = neighRowColFromOffsets midCent ( 1, -1)
+    let botCent = neighRowColFromOffsets midCent ( 1,  0)
+    let botRigh = neighRowColFromOffsets midCent ( 1,  1)
+    print midCent 
+    print topLeft 
+    print topCent 
+    print topRigh 
+    print midLeft 
+    print midRigh 
+    print botLeft 
+    print botCent 
+    print botRigh 
+    let allNeighOffsets = 
+            if relateDiagonals then
+                [midRigh, botLeft, botCent, botRigh]
+            else
+                [midRigh,          botCent]
+    print allNeighOffsets
+    let calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
+    print calculatedNeighRowCols
     -- END OF DEBUG
     putStrLn "End of CoulAdj"
 
@@ -184,16 +211,15 @@ evalOnePixel img row col dontRelateDiagonals rowColIsInBounds =
             else
                 [midRigh,          botCent]
         
-        -- calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
-        calculatedNeighRowCols = [(row+rowOff, col+colOff) | (rowOff,colOff) <- allNeighOffsets]
+        calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
         allNeighRowCols = filter rowColIsInBounds calculatedNeighRowCols
         hotspotPixel  = [pixelAtRowCol img r c | (r,c) <- [midCent]]
         neighbrPixels = [pixelAtRowCol img r c | (r,c) <- allNeighRowCols]
         allAdjacencies = [ (hotspot, neighbr) | hotspot <- hotspotPixel, neighbr <- neighbrPixels ]
         removedSameColours = [(a, b) | (a,b) <- allAdjacencies, a /= b]
         removedDuplicates = nub removedSameColours
-        addedSymmetricals = concat [ [(a,b),(b,a)] | (a,b) <- removedDuplicates ]
-    in addedSymmetricals
+        --addedSymmetricals = concat [ [(a,b),(b,a)] | (a,b) <- removedDuplicates ]
+    in removedDuplicates
 
 neighRowColFromOffsets :: (Int, Int) -> (Int, Int) -> (Int, Int)
 neighRowColFromOffsets (row,col) (rowOffset,colOffset) =
