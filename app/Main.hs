@@ -92,6 +92,21 @@ main = do
     let stringified = stringify adjacencies
     -- # 6) WRITE TO FILE #
     writeFile (resultFileArg settings) stringified
+    -- START OF DEBUG
+    let nbRows = imageHeight img
+    let nbCols = imageWidth img
+    let maxRow = nbRows - 1
+    let maxCol = nbCols - 1
+    let allRows = [0..maxRow]
+    let allCols = [0..maxCol]
+    let allRowCols = [(row,col) | row <- allRows, col <- allCols]
+    let rowColIsInBounds (row,col) = 
+            0 <= row && row <= maxRow &&
+            0 <= col && col <= maxCol
+    let dontDiags = dontRelateDiagonals settings
+    let evaledR3C3 = evalOnePixel img 3 3 dontDiags rowColIsInBounds
+    putStrLn (stringify (sortAdjacencies evaledR3C3))
+    -- END OF DEBUG
     putStrLn "End of CoulAdj"
 
 
@@ -169,7 +184,8 @@ evalOnePixel img row col dontRelateDiagonals rowColIsInBounds =
             else
                 [midRigh,          botCent]
         
-        calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
+        -- calculatedNeighRowCols = map (neighRowColFromOffsets midCent) allNeighOffsets
+        calculatedNeighRowCols = [(row+rowOff, col+colOff) | (rowOff,colOff) <- allNeighOffsets]
         allNeighRowCols = filter rowColIsInBounds calculatedNeighRowCols
         hotspotPixel  = [pixelAtRowCol img r c | (r,c) <- [midCent]]
         neighbrPixels = [pixelAtRowCol img r c | (r,c) <- allNeighRowCols]
