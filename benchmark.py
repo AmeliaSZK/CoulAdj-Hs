@@ -63,8 +63,8 @@ test_one_image(
     "tests\\proprietary\\golden warhammer_map_1_1_shadow.tsv"
     )
 
-for size in [1,2,4,8,16,32,64,128,256,512]:
-    test_one_size(size)
+# for size in [1,2,4,8,16,32,64,128,256,512]:
+#     test_one_size(size)
 
 
 
