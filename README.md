@@ -26,7 +26,7 @@ The license for the files under the `./tests/` directory is specified in `./test
 # Known Requirements
 *   GHC
 *   Cabal
-*   Python 3
+*   Python 3 (Optional, only to run the benchmark script)
 
 On Windows, we installed GHC and Cabal with [GHCup](https://www.haskell.org/ghcup/)
 
@@ -34,11 +34,21 @@ On Windows, we installed GHC and Cabal with [GHCup](https://www.haskell.org/ghcu
 All commands are executed from the root of the repository, which is the directory where this
 Readme file is stored.
 
-For development:
+### For development, copy-pastable:
+```
+cabal run CoulAdj-Hs ./tests/sample-size-1.png ./tests/results/result-size-1.tsv
+```
+
+To check that you have correct results from the above command,
+compare `./tests/results/result-size-1.tsv`
+with `./tests/golden.tsv` and make sure that both files have the same content.
+(It doesn't matter if the newlines are different)
+
+### For development, summarized:
 ```
 cabal run CoulAdj-Hs image.png results.tsv
 ```
-With the `--dont-relate-diagonals` option:
+### With the `--dont-relate-diagonals` option:
 ```
 cabal run CoulAdj-Hs --dont-relate-diagonals image.png results.tsv
 ```
@@ -46,15 +56,23 @@ cabal run CoulAdj-Hs --dont-relate-diagonals image.png results.tsv
 The `cabal run` command will first build the program, unless there was no changes, 
 and then execute it.
 
-To just build:
+### To just build:
 ```
 cabal build
 ```
 
-To just execute:
+### To just execute:
 ```
 cabal exec CoulAdj-Hs image.png results.tsv
 ```
+
+## Benchmarking
+The benchmark script in python is currently Windows-only because I was lazy
+with filepaths.
+
+Also, despite having installed Python, I still can't run it from powershell,
+and I need to click the Play button in Visual Studio Code?!?
+(Or maybe it just wasn't correctly installed?!?)
 
 # API
 
