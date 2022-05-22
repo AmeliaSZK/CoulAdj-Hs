@@ -15,6 +15,11 @@ Most of the runtime will be spent in:
     3) Compute the pairs of adjacencies
 
 Most of the development time & code lines are expected to be spent in the rest.
+Epilogue: To get to a first correct implementation, we spent about
+    2h coding #3, and 3h30m coding #4-6.
+    But of the 2 hours spent on #3, 1h was spent coding the bulk of it,
+        and the other hour was spent finding the big woopsie. 
+    (there was also a small woopsie that was quickly found)
 -}
 
 import System.Environment
@@ -43,49 +48,6 @@ main = do
     print (imageWidth img)
     putStr "imageHeight = "
     print (imageHeight img)
-    -- START OF PIXEL TESTS
-    -- let testPixel = PixelRGBA8 10 220 230 249
-    -- let blu = PixelRGBA8  10  20 230 252
-    -- let gre = PixelRGBA8  10 220  30 250
-    -- let cya = PixelRGBA8  10 220 230 248
-    -- let red = PixelRGBA8 210  20  30 246
-    -- let mag = PixelRGBA8 210  20 230 244
-    -- let yel = PixelRGBA8 210 220  30 242
-    -- print testPixel
-    -- let allColours = [
-    --         yel,
-    --         red,
-    --         mag,
-    --         gre,
-    --         cya,
-    --         blu
-    --         ]
-    -- let allColoursSorted = sort allColours
-    -- putStrLn "allColours :"
-    -- putStrLn (unlines (map show allColours))
-    -- putStrLn "allColoursSorted :"
-    -- putStrLn (unlines (map show allColoursSorted))
-    -- let allColourPairs = [(a,b) | a <- allColours, b <- allColours ]
-    -- let allColourPairsSorted = sort allColourPairs
-    -- putStrLn "allColourPairs :"
-    -- putStrLn (unlines (map show allColourPairs))
-    -- putStrLn "allColourPairsSorted :"
-    -- putStrLn (unlines (map show allColourPairsSorted))
-    -- putStrLn "------------------------"
-    -- putStrLn (stringify allColourPairsSorted)
-    -- putStrLn "------------------------"
-    -- let allRowColColours = [
-    --         (0, 0, blu),
-    --         (0, 0, gre),
-    --         (0, 0, cya),
-    --         (0, 0, red),
-    --         (0, 0, mag),
-    --         (0, 0, yel)
-    --         ]
-    -- let allPixels = extractPixels img
-    -- let stringifiedPixels = stringifyPixels allPixels
-    --writeFile (resultFileArg settings) stringifiedPixels
-    -- END OF PIXEL TESTS
     -- # 3) COMPUTE ADJACENCIES #
     let unsortedAdjacencies = computeAdjacencies img (dontRelateDiagonals settings)
     -- # 4) SORT ADJACENCIES #
@@ -94,46 +56,6 @@ main = do
     let stringified = stringify adjacencies
     -- # 6) WRITE TO FILE #
     writeFile (resultFileArg settings) stringified
-    -- START OF DEBUG
-    -- let dontDiags = dontRelateDiagonals settings
-    -- let relateDiagonals = not dontDiags
-    -- let nbRows = imageHeight img
-    -- let nbCols = imageWidth img
-    -- let maxRow = nbRows - 1
-    -- let maxCol = nbCols - 1
-    -- let allRows = [0..maxRow]
-    -- let allCols = [0..maxCol]
-    -- let allRowCols = [(row,col) | row <- allRows, col <- allCols]
-    -- let rowColIsInBounds (row,col) = 
-    --         0 <= row && row <= maxRow &&
-    --         0 <= col && col <= maxCol
-    -- let evaledR3C3 = evalOnePixel img 3 3 dontDiags rowColIsInBounds
-    -- putStrLn (stringify (sortAdjacencies evaledR3C3))
-    -- let midCent = (3,3)
-    -- let topLeft = neighRowColFromOffsets midCent (-1, -1)
-    -- let topCent = neighRowColFromOffsets midCent (-1,  0)
-    -- let topRigh = neighRowColFromOffsets midCent (-1,  1)
-    -- let midLeft = neighRowColFromOffsets midCent ( 0, -1)
-    -- let midRigh = neighRowColFromOffsets midCent ( 0,  1)
-    -- let botLeft = neighRowColFromOffsets midCent ( 1, -1)
-    -- let botCent = neighRowColFromOffsets midCent ( 1,  0)
-    -- let botRigh = neighRowColFromOffsets midCent ( 1,  1)
-    -- print midCent 
-    -- print topLeft 
-    -- print topCent 
-    -- print topRigh 
-    -- print midLeft 
-    -- print midRigh 
-    -- print botLeft 
-    -- print botCent 
-    -- print botRigh 
-    -- let calculatedNeighRowCols = 
-    --         if relateDiagonals then
-    --             [midRigh, botLeft, botCent, botRigh]
-    --         else
-    --             [midRigh,          botCent]
-    -- print calculatedNeighRowCols
-    -- END OF DEBUG
     putStrLn "End of CoulAdj"
 
 
